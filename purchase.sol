@@ -3,7 +3,7 @@ pragma solidity ^0.8.7;
 
 // ----------------------------------------------------------------------------
 /// @author Gradi Kayamba
-/// @title Purchase with ether with escrow
+/// @title Purchase items with ether
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
@@ -132,8 +132,8 @@ contract Purchase is Context {
     function order(address payable _seller, address payable _buyer, uint256 _id)
     public
     payable
-    whenUnlocked(_seller, _buyer, _id)
     onlyBoth(_buyer, _seller)
+    whenUnlocked(_seller, _buyer, _id)
     returns (bool success)
     {
         // Add ether to escrow.
