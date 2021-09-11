@@ -21,7 +21,6 @@ abstract contract Context {
     }
 }
 
-
 // ----------------------------------------------------------------------------
 /// @title Purchase : Contract facilitating purchases using ether.
 //  This contract uses the combination of  escrow, locked, and contribution 
@@ -29,8 +28,8 @@ abstract contract Context {
 //  - escrow        : helps track the seller and buyer combined eth funds 
 //                    base on the transaction id.
 //  - locked        : helps lock transaction based on certain condition to 
-//                    disable the guyer or the seller for withdrawing their funds.
-//  - contribution  : helps track each seller and buyer eth funds for transfers. 
+//                    disable the buyer or the seller for withdrawing their funds.
+//  - contribution  : helps track each seller and buyer ether funds for transfers. 
 // ----------------------------------------------------------------------------
 contract Purchase is Context {
     // Define public constant variables.
@@ -38,11 +37,11 @@ contract Purchase is Context {
     address payable public deposit; // Deposit address for ehter fee.
     uint256 public fee;             // Fee for using the contract
     // Escrow help track transactions based on the transaction id
-    // using the seller's and buyer's address as references.
+    // escrow[][][]       : uses the seller's and buyer's address as a reference.
     mapping(uint256 => mapping(address => mapping(address => uint256))) escrow;
-    // Locking transaction on the order based on the transaction id.
+    // locked[][][]       : Locks transaction on the order based on the transaction id.
     mapping(uint256 => mapping(address => mapping(address => bool))) locked;
-    // Tracking each party's contributed funds based on the transaction id.
+    // contribution[][][] : Tracks each party's contributed funds based on the transaction id.
     mapping(uint256 => mapping(address => uint256)) contribution;
 
     // Set the follow value on contruction:
