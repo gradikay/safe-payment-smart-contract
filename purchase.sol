@@ -43,7 +43,7 @@ contract Purchase is Context {
     // contribution[][][] : Tracks each party's contributed funds based on the transaction id.
     mapping(uint256 => mapping(address => uint256)) contribution;
 
-    // Set the follow value on contruction:
+    // Set the following value on contruction:
     // founder's address, deposit address, and fee amount.
     constructor(address payable _deposit) {
         founder = payable(_msgSender());
@@ -54,8 +54,8 @@ contract Purchase is Context {
     /**
      * @dev Triggers on any successful call to order().
      * @param _seller : The address selling the item.
-     * @param _buyer : The address buying the item.
-     * @param _id : The transaction id for the item.
+     * @param _buyer  : The address buying the item.
+     * @param _id     : The transaction id for the item.
      */
     event Order(address _seller, address _buyer, uint256 _id);
     /// Triggers on any successful call to cancel().
@@ -86,9 +86,9 @@ contract Purchase is Context {
             revert NoneZero();
         _;
     }
-    /// @dev Makes a function callable only by _sender.
-    modifier onlyBy(address _sender) {
-        if (_msgSender() != _sender)
+    /// @dev Makes a function callable only by _authorized.
+    modifier onlyBy(address _authorized) {
+        if (_msgSender() != _authorized)
             revert OnlyBy();
         _;
     }
@@ -112,7 +112,7 @@ contract Purchase is Context {
     }
     /// @dev Makes a function callable only by _buyer or _seller.
     modifier onlyBoth(address _seller, address _buyer) {
-        require(_msgSender() == _buyer || _msgSender() == _seller);
+        require(_msgSender() == _seller || _msgSender() == _buyer);
         _;
     }
 
@@ -121,7 +121,7 @@ contract Purchase is Context {
      * @notice Both seller and buyer have to send ether to the contract as escrow.
      * @notice This function is first called by _buyer only when unlocked,
      * @notice then called by _seller to lock it (the order).
-     * @notice callable only by _buyer or _seller of order _id
+     * @notice Callable only by _buyer or _seller of order _id.
      * @param _seller : The address selling the item.
      * @param _buyer : The address buying the item.
      * @param _id : The transaction id for the item.
@@ -156,8 +156,7 @@ contract Purchase is Context {
     /**
      * @notice Confirm that you (_buyer) received the item.
      * @notice This will transfer the locked ether to the _seller, the founder, and you (_buyer).
-     * @notice callable only by _buyer
-     * @notice then called by the seller to lock it (the order).
+     * @notice Callable only by _buyer.
      * @param _seller : The address selling the item.
      * @param _buyer : The address buying the item.
      * @param _id : The transaction id for the item.
@@ -165,14 +164,14 @@ contract Purchase is Context {
     function confirm(address payable _seller, address _buyer, uint256 _id)
     onlyBy(_buyer)
     whenLocked(_seller, _buyer, _id)
-    noZero(contribution[_id][_msgSender()])
+    noZero(contribution[_id][_msgSender()]) // Get amount contributed by _msgSender()
     public 
     {
         // NOTE - Always check balance first before transaction.
         // Check _buyer's balance.
-        uint _buyerFund = contribution[_id][_msgSender()];
+        uint _buyerBalance = contribution[_id][_msgSender()];
         // Check _seller's balance.
-        uint _sellerFund = contribution[_id][_seller];
+        uint _sellerBalance = contribution[_id][_seller];
         
         // Set _buyer contribution to 0.
         contribution[_id][_msgSender()] = 0;
@@ -182,21 +181,23 @@ contract Purchase is Context {
         escrow[_id][_seller][_buyer] = 0;
         
         // Set transaction fee.
-        uint256 payFee = (_sellerFund * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
+        // if fee = 100 then 1%; if fee = 30 then 0.3% ... and so on.
+        // thus (balance * 100) * 30 / 10000 ~ 0.3% ~ will work!
+        // or balance * 0.3 / 100 ~ 0.3% ~ will not work!
+        uint256 payFee = (_sellerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
         
         // The buyer has to put (2 x ether) to the escrow and the seller only (1 x ether)
         // To allocate the funds correctly, with have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and seller's fund to the buyer.
         // Transfer seller's funds to the buyer.
-        (bool successToSeller, ) = _seller.call{value: (_buyerFund - payFee)}("");
+        (bool successToSeller, ) = _seller.call{value: (_buyerBalance - payFee)}("");
         // Transfer buyer's funds to the seller.
-        (bool successToBuyer,  ) = _buyer.call{value: _sellerFund}("");
+        (bool successToBuyer,  ) = _buyer.call{value: _sellerBalance}("");
         // Transfer fee to the deposit of the founder.
         (bool successToFounder,) = deposit.call{value: payFee}("");
         
         // Check that the transfer is successful
         if(!successToSeller && !successToBuyer && !successToFounder) revert FailedTransfer();
-        // require(successToSeller && successToBuyer && successToFounder, "Failed to transfer the funds, aborting.");
         
         // See {event Comfirm(...)}
         emit Comfirm(_seller, _buyer, _id);
@@ -204,8 +205,8 @@ contract Purchase is Context {
  
     /**
      * @notice This function refunds ether to _msgSender() (_buyer or _seller) for order _id.
-     * @notice callable only when order is unlocked and contribution is not (0) zero.
-     * @notice callable only by _buyer or _seller of order _id
+     * @notice Callable only when order is unlocked and contribution is not (0) zero.
+     * @notice Callable only by _buyer or _seller for order _id
      * @param _seller : The address selling the item.
      * @param _buyer : The address buying the item.
      * @param _id : The transaction id for the item.
