@@ -25,10 +25,10 @@ abstract contract Context {
 /// @title Purchase : Contract facilitating purchases using ether.
 //  This contract uses the combination of escrow, locked, and contribution 
 //  to track, and enable or disable transactions.
-//  - escrow        : helps track the seller and buyer combined ether funds 
+//  - escrow        : helps track the seller's and buyer's combined ether funds 
 //                    based on the transaction id.
-//  - locked        : helps lock transaction based on certain condition to 
-//                    disable the buyer or the seller for withdrawing their funds.
+//  - locked        : helps lock transaction based on certain conditions to 
+//                    disable the buyer or the seller from withdrawing their funds.
 //  - contribution  : helps track each seller and buyer ether funds for transfers. 
 // ----------------------------------------------------------------------------
 contract Purchase is Context {
