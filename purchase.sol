@@ -35,11 +35,11 @@ contract Purchase is Context {
     address payable public founder; // Founder of the contract.
     address payable public deposit; // Deposit address for ehter fee.
     uint256 public fee;             // Fee for using the contract
-    // escrow[][][]       : Uses the seller and buyer addresses as a reference.
+    // escrow[][][]     : Uses the seller and buyer addresses as a reference.
     mapping(uint256 => mapping(address => mapping(address => uint256))) escrow;
-    // locked[][][]       : Locks transactions on the order based on the transaction id.
+    // locked[][][]     : Locks transactions on the order based on the transaction id.
     mapping(uint256 => mapping(address => mapping(address => bool))) locked;
-    // contribution[][][] : Tracks each party's contributed funds based on the transaction id.
+    // contribution[][] : Tracks each party's contributed funds based on the transaction id.
     mapping(uint256 => mapping(address => uint256)) contribution;
 
     // Set the following value on construction:
