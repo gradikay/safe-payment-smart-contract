@@ -22,7 +22,7 @@ abstract contract Context {
 }
 
 // ----------------------------------------------------------------------------
-/// @title Purchase : Contract facilitating purchases using ether.
+/// @title Purchase : Smart Contract facilitating purchases using ether.
 //  This contract uses the combination of escrow, locked, and contribution 
 //  to track, and enable or disable transactions.
 //  - escrow        : Helps track the seller and buyer combined ether funds 
