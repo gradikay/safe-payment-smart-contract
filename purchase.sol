@@ -68,16 +68,16 @@ contract Purchase is Context {
     
     /// You are not authorized to call this function.
     error OnlyBy();
-    /// Withdraws are not locked.
-    error WithdrawUnlocked();
-    /// Withdraws are locked.
-    error WithdrawLocked();
     /// The amount must be greater than (0) zero.
     error NoZero();
-    /// Failed to transfer the funds, aborting.
-    error FailedTransfer();
     /// Zero address not allowed.
     error NoneZero();
+    /// Failed to transfer the funds, aborting.
+    error FailedTransfer();
+    /// Withdraws are locked.
+    error WithdrawLocked();
+    /// Withdraws are not locked.
+    error WithdrawUnlocked();
 
     /// @dev Makes a function callable only when the _owner is not a zero-address.
     modifier noneZero(address _recipient){
