@@ -24,7 +24,8 @@ abstract contract Context {
 // ----------------------------------------------------------------------------
 /// @title Purchase : Smart Contract facilitating purchases using ether.
 //  This contract uses the combination of escrow, locked, and contribution 
-//  to track, and enable or disable transactions.
+//  to track, and enable or disable transactions using id, and seller and buyer 
+//  addresses as a reference.
 //  - escrow        : Helps track the seller and buyer combined ether funds 
 //                    based on the transaction id.
 //  - locked        : Disables the buyer and the seller from withdrawing 
@@ -37,11 +38,11 @@ contract Purchase is Context {
     address payable public founder; // Founder of the contract.
     address payable public deposit; // Deposit address for ehter fee.
     uint256 public fee;             // Fee for using the contract
-    // escrow[][][]     : Uses the seller and buyer addresses as a reference.
+    // escrow[][][]     : Tracks both seller and buyer contributed funds.
     mapping(uint256 => mapping(address => mapping(address => uint256))) escrow;
-    // locked[][][]     : Locks transactions on the order based on the transaction id.
+    // locked[][][]     : Locks transactions (withdraws) on the order.
     mapping(uint256 => mapping(address => mapping(address => bool))) locked;
-    // contribution[][] : Tracks each party's contributed funds based on the transaction id.
+    // contribution[][] : Tracks each party's contributed funds.
     mapping(uint256 => mapping(address => uint256)) contribution;
 
     // Set the following value on construction:
