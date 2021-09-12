@@ -187,7 +187,7 @@ contract Purchase is Context {
         // Set transaction fee.
         // if fee = 100 then 1%; if fee = 30 then 0.3% ... and so on.
         // thus ~ ((balance * 100) * 30 / 10000) ~ 0.3% ~ will work!
-        // or   ~ (balance * 0.3 / 100)          ~ 0.3% ~ will not work!
+        // and  ~ (balance * 0.3 / 100)          ~ 0.3% ~ will not work!
         uint256 payFee = (_sellerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
         
         // The buyer has to put (2 x ether) to the escrow and the seller only (1 x ether)
