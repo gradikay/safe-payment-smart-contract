@@ -36,7 +36,7 @@ abstract contract Context {
 contract Purchase is Context {
     // Define public constant variables.
     address payable public founder; // Founder of the contract.
-    address payable public deposit; // Deposit address for ehter fee.
+    address payable public deposit; // Deposit address for ether fee.
     uint256 public fee;             // Fee for using the contract
     // escrow[][][]     : Tracks both seller and buyer contributed funds.
     mapping(uint256 => mapping(address => mapping(address => uint256))) escrow;
