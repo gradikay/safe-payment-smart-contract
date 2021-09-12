@@ -191,7 +191,7 @@ contract Purchase is Context {
         uint256 payFee = (_sellerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
         
         // The buyer has to put (2 x ether) to the escrow and the seller only (1 x ether)
-        // To allocate the funds correctly, with have to criss-cross the funds.
+        // To allocate the funds correctly, we have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and seller's fund to the buyer.
         // Transfer seller's funds to the buyer.
         (bool successToBuyer,  ) = _seller.call{value: (_buyerBalance - payFee)}("");
