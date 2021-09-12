@@ -183,17 +183,17 @@ contract Purchase is Context {
         
         // Set transaction fee.
         // if fee = 100 then 1%; if fee = 30 then 0.3% ... and so on.
-        // thus (balance * 100) * 30 / 10000 ~ 0.3% ~ will work!
-        // or balance * 0.3 / 100 ~ 0.3% ~ will not work!
+        // thus ~ ((balance * 100) * 30 / 10000) ~ 0.3% ~ will work!
+        // or   ~ (balance * 0.3 / 100)          ~ 0.3% ~ will not work!
         uint256 payFee = (_sellerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
         
         // The buyer has to put (2 x ether) to the escrow and the seller only (1 x ether)
         // To allocate the funds correctly, with have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and seller's fund to the buyer.
         // Transfer seller's funds to the buyer.
-        (bool successToSeller, ) = _seller.call{value: (_buyerBalance - payFee)}("");
+        (bool successToBuyer, ) = _seller.call{value: (_buyerBalance - payFee)}("");
         // Transfer buyer's funds to the seller.
-        (bool successToBuyer,  ) = _buyer.call{value: _sellerBalance}("");
+        (bool successToSeller,  ) = _buyer.call{value: _sellerBalance}("");
         // Transfer fee to the deposit of the founder.
         (bool successToFounder,) = deposit.call{value: payFee}("");
         
@@ -239,8 +239,8 @@ contract Purchase is Context {
     
     /**
      * @dev Gas cost min (26125) - max (28000) 
-     * @notice This function unlockes transaction for order _id.
-     * @notice callable only by _seller and when locked
+     * @notice This function unlocks transaction for order _id.
+     * @notice Callable only by _seller and when locked
      * @param _seller : The address selling the item.
      * @param _buyer  : The address buying the item.
      * @param _id     : The transaction id for the item.
@@ -267,7 +267,7 @@ contract Purchase is Context {
      * @notice Changes fees.
      * @notice Callable by the founder only.
      * @notice Callable only by a none-zero address.
-     * @param _newFee : The new fee amount.
+     * @param _newFee : The new fee amount. (e.g. 100 is 1%, 30 is 0.3%, 5 is 0.05% ...)
      */
     function changeFee(uint256 _newFee) 
     onlyBy(founder)
@@ -306,7 +306,6 @@ contract Purchase is Context {
      * @return remaining 000
      */
     function escrowOf(address _seller, address _buyer, uint256 _id) public view returns (uint256 remaining) {
-        // Returns spender's allowance balance.
         return escrow[_id][_seller][_buyer];
     }
     
@@ -315,16 +314,14 @@ contract Purchase is Context {
      * @return pending true/false
      */
     function lockedOf(address _seller, address _buyer, uint256 _id) public view returns (bool pending) {
-        // Returns spender's allowance balance.
         return locked[_id][_seller][_buyer];
     }
     
     /**
-     * @notice Returns the amount of ether contribution of an order _id.
+     * @notice Returns the amount of ether contribution of a _sender based on order _id.
      * @return balance 000
      */
     function contributionOf(address _sender, uint256 _id) public view returns (uint256 balance) {
-        // Returns spender's allowance balance.
         return contribution[_id][_sender];
     }
 }
