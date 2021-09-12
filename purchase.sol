@@ -42,7 +42,7 @@ contract Purchase is Context {
     // contribution[][][] : Tracks each party's contributed funds based on the transaction id.
     mapping(uint256 => mapping(address => uint256)) contribution;
 
-    // Set the following value on contruction:
+    // Set the following value on construction:
     // founder's address, deposit address, and fee amount.
     constructor(address payable _deposit) {
         founder = payable(_msgSender());
