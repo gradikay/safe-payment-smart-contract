@@ -27,8 +27,10 @@ abstract contract Context {
 //  to track, and enable or disable transactions.
 //  - escrow        : Helps track the seller and buyer combined ether funds 
 //                    based on the transaction id.
-//  - locked        : Disables the buyer and the seller from withdrawing their funds.
-//  - contribution  : Helps track seller or buyer ether fund to facilitate transfers. 
+//  - locked        : Disables the buyer and the seller from withdrawing 
+//                    their funds based on the transaction id.
+//  - contribution  : Helps track seller or buyer ether fund to facilitate 
+//                    transfers based on the transaction id.
 // ----------------------------------------------------------------------------
 contract Purchase is Context {
     // Define public constant variables.
