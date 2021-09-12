@@ -27,8 +27,8 @@ abstract contract Context {
 //  and `contribution` to track, and enable or disable transactions  
 //  using `_id`, and `_seller` and `_buyer` addresses as a reference.
 //  - escrow[_id][_seller][_buyer]      : Helps track the seller and buyer combined 
-//                                        ether funds  based on the transaction id.
-//  - locked[_id][_seller][_buyer]      : Disables the buyer and the seller from withdrawing 
+//                                        ether funds based on the transaction id.
+//  - locked[_id][_seller][_buyer]      : Prevents the buyer and the seller from withdrawing 
 //                                        their funds based on the transaction id.
 //  - contribution[_id][_seller/_buyer] : Helps track seller or buyer ether fund to facilitate 
 //                                        transfers based on the transaction id.
