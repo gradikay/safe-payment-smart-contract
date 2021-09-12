@@ -23,9 +23,9 @@ abstract contract Context {
 
 // ----------------------------------------------------------------------------
 /// @title Purchase : Smart Contract facilitating purchases using ether.
-//  This contract uses the combination of escrow, locked, and contribution 
-//  to track, and enable or disable transactions using id, and seller and buyer 
-//  addresses as a reference.
+//  This contract uses the mapping combination of `escrow`, `locked`,  
+//  and `contribution` to track, and enable or disable transactions  
+//  using `_id`, and `_seller` and `_buyer` addresses as a reference.
 //  - escrow        : Helps track the seller and buyer combined ether funds 
 //                    based on the transaction id.
 //  - locked        : Disables the buyer and the seller from withdrawing 
