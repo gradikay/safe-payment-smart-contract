@@ -116,14 +116,15 @@ contract Purchase is Context {
     }
 
     /**
+     * @dev Gas cost min (72761) - max (77000) 
      * @notice Transfers ether to the contract for order _id.
      * @notice Both seller and buyer have to send ether to the contract as escrow.
      * @notice This function is first called by _buyer only when unlocked,
      * @notice then called by _seller to lock it (the order).
      * @notice Callable only by _buyer or _seller of order _id.
      * @param _seller : The address selling the item.
-     * @param _buyer : The address buying the item.
-     * @param _id : The transaction id for the item.
+     * @param _buyer  : The address buying the item.
+     * @param _id     : The transaction id for the item.
      * @return success
      */
     function order(address payable _seller, address payable _buyer, uint256 _id)
@@ -153,12 +154,13 @@ contract Purchase is Context {
     }
  
     /**
+     * @dev Gas cost min (60805) - max (62000) 
      * @notice Confirm that you (_buyer) received the item.
      * @notice This will transfer the locked ether to the _seller, the founder, and you (_buyer).
      * @notice Callable only by _buyer.
      * @param _seller : The address selling the item.
-     * @param _buyer : The address buying the item.
-     * @param _id : The transaction id for the item.
+     * @param _buyer  : The address buying the item.
+     * @param _id     : The transaction id for the item.
      */
     function confirm(address payable _seller, address _buyer, uint256 _id)
     onlyBy(_buyer)
@@ -203,12 +205,13 @@ contract Purchase is Context {
     }
  
     /**
+     * @dev Gas cost min (36575) - max (42000 !important)
      * @notice This function refunds ether to _msgSender() (_buyer or _seller) for order _id.
      * @notice Callable only when order is unlocked and contribution is not (0) zero.
      * @notice Callable only by _buyer or _seller for order _id
      * @param _seller : The address selling the item.
-     * @param _buyer : The address buying the item.
-     * @param _id : The transaction id for the item.
+     * @param _buyer  : The address buying the item.
+     * @param _id     : The transaction id for the item.
      */
     function cancel(address _seller, address _buyer, uint256 _id)
     public 
@@ -235,11 +238,12 @@ contract Purchase is Context {
     }
     
     /**
+     * @dev Gas cost min (26125) - max (28000) 
      * @notice This function unlockes transaction for order _id.
      * @notice callable only by _seller and when locked
      * @param _seller : The address selling the item.
-     * @param _buyer : The address buying the item.
-     * @param _id : The transaction id for the item.
+     * @param _buyer  : The address buying the item.
+     * @param _id     : The transaction id for the item.
      * @return success
      */
     function unlock(address _seller, address _buyer, uint256 _id) 
@@ -259,6 +263,7 @@ contract Purchase is Context {
     }
     
     /**
+     * @dev Gas cost min (29125) - max (31000)
      * @notice Changes fees.
      * @notice Callable by the founder only.
      * @notice Callable only by a none-zero address.
@@ -278,6 +283,7 @@ contract Purchase is Context {
     }
     
     /**
+     * @dev Gas cost min (33780) - max (35000) 
      * @notice Transfers ether from sender address to _recipient address.
      * @notice Callable only by a none-zero address.
      * @param _recipient : The address receiving ether.
