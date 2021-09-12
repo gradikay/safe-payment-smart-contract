@@ -305,7 +305,7 @@ contract Purchase is Context {
     
     
     /**
-     * @notice Returns the amount of ether in escrow order _id.
+     * @notice Returns the amount of ether of _seller and _buyer escrow for order _id.
      * @return remaining 000
      */
     function escrowOf(address _seller, address _buyer, uint256 _id) public view returns (uint256 remaining) {
@@ -313,7 +313,7 @@ contract Purchase is Context {
     }
     
     /**
-     * @notice Returns the locked status of a order _id.
+     * @notice Returns the locked status for order _id of _seller and _buyer.
      * @return pending true/false
      */
     function lockedOf(address _seller, address _buyer, uint256 _id) public view returns (bool pending) {
@@ -321,7 +321,7 @@ contract Purchase is Context {
     }
     
     /**
-     * @notice Returns the amount of ether contribution of a _sender based on order _id.
+     * @notice Returns the amount of ether contribution of _sender for order _id.
      * @return balance 000
      */
     function contributionOf(address _sender, uint256 _id) public view returns (uint256 balance) {
