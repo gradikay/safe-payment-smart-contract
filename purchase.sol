@@ -188,17 +188,17 @@ contract Purchase is Context {
         // if fee = 100 then 1%; if fee = 30 then 0.3% ... and so on.
         // thus ~ ((balance * 100) * 30 / 10000) ~ 0.3% ~ will work!
         // and  ~ (balance * 0.3 / 100)          ~ 0.3% ~ will not work!
-        uint256 payFee = (_buyerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the payFee
+        uint256 _feeAmount = (_buyerBalance * 100) * fee / 1000000; // whatever % (fee percentage) will go toward the fee amount
         
         // The buyer has to put (2 x ether) to the escrow and the seller only (1 x ether)
         // To allocate the funds correctly, we have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and the seller's fund to the buyer.
         // Transfer buyer's funds to the seller.
-        (bool successToSeller, ) = _seller.call{value: (_buyerBalance - payFee)}("");
+        (bool successToSeller, ) = _seller.call{value: (_buyerBalance - _feeAmount)}("");
         // Transfer seller's funds to the buyer.
         (bool successToBuyer, )  =  _buyer.call{value: _sellerBalance}("");
         // Transfer fee to the deposit of the founder.
-        (bool successToFounder,) = deposit.call{value: payFee}("");
+        (bool successToFounder,) = deposit.call{value: _feeAmount}("");
         
         // Check that the transfer is successful
         if(!successToSeller && !successToBuyer && !successToFounder) revert FailedTransfer();
