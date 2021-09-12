@@ -178,7 +178,7 @@ contract Purchase is Context {
         contribution[_id][_msgSender()] = 0;
         // Set _seller contribution to 0.
         contribution[_id][_seller] = 0;
-        // Set _seller and _buyer escrow _id to 0.
+        // Set _seller and _buyer escrow to 0.
         escrow[_id][_seller][_buyer] = 0;
         
         // Set transaction fee.
