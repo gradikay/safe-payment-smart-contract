@@ -173,16 +173,16 @@ contract Purchase is Context {
     {
         // NOTE - Always check balance first before transaction.
         // Check _buyer's balance.
-        uint _buyerBalance = contribution[_id][_msgSender()];
+        uint _buyerBalance  = contribution[_id][_msgSender()];
         // Check _seller's balance.
         uint _sellerBalance = contribution[_id][_seller];
         
         // Set _buyer contribution to 0.
         contribution[_id][_msgSender()] = 0;
         // Set _seller contribution to 0.
-        contribution[_id][_seller] = 0;
+        contribution[_id][_seller]      = 0;
         // Set _seller and _buyer escrow to 0.
-        escrow[_id][_seller][_buyer] = 0;
+        escrow[_id][_seller][_buyer]    = 0;
         
         // Set transaction fee.
         // if fee = 100 then 1%; if fee = 30 then 0.3% ... and so on.
@@ -194,9 +194,9 @@ contract Purchase is Context {
         // To allocate the funds correctly, with have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and seller's fund to the buyer.
         // Transfer seller's funds to the buyer.
-        (bool successToBuyer, ) = _seller.call{value: (_buyerBalance - payFee)}("");
+        (bool successToBuyer,  ) = _seller.call{value: (_buyerBalance - payFee)}("");
         // Transfer buyer's funds to the seller.
-        (bool successToSeller,  ) = _buyer.call{value: _sellerBalance}("");
+        (bool successToSeller, ) =  _buyer.call{value: _sellerBalance}("");
         // Transfer fee to the deposit of the founder.
         (bool successToFounder,) = deposit.call{value: payFee}("");
         
