@@ -165,7 +165,7 @@ contract Purchase is Context {
      * @param _buyer  : The address buying the item.
      * @param _id     : The transaction id for the item.
      */
-    function confirm(address payable _seller, address _buyer, uint256 _id)
+    function confirm(address payable _seller, address payable _buyer, uint256 _id)
     onlyBy(_buyer)
     whenLocked(_seller, _buyer, _id)
     noZero(contribution[_id][_msgSender()]) // Get amount contributed by _msgSender()
