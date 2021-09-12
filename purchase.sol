@@ -194,9 +194,9 @@ contract Purchase is Context {
         // To allocate the funds correctly, we have to criss-cross the funds.
         // Thus sending the buyer's fund to the seller and the seller's fund to the buyer.
         // Transfer buyer's funds to the seller.
-        (bool successToSeller,  ) = _seller.call{value: (_buyerBalance - payFee)}("");
+        (bool successToSeller, ) = _seller.call{value: (_buyerBalance - payFee)}("");
         // Transfer seller's funds to the buyer.
-        (bool successToBuyer, ) =  _buyer.call{value: _sellerBalance}("");
+        (bool successToBuyer, )  =  _buyer.call{value: _sellerBalance}("");
         // Transfer fee to the deposit of the founder.
         (bool successToFounder,) = deposit.call{value: payFee}("");
         
