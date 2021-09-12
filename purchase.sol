@@ -37,7 +37,7 @@ contract Purchase is Context {
     uint256 public fee;             // Fee for using the contract
     // escrow[][][]       : Uses the seller's and buyer's address as a reference.
     mapping(uint256 => mapping(address => mapping(address => uint256))) escrow;
-    // locked[][][]       : Locks transaction on the order based on the transaction id.
+    // locked[][][]       : Locks transactions on the order based on the transaction id.
     mapping(uint256 => mapping(address => mapping(address => bool))) locked;
     // contribution[][][] : Tracks each party's contributed funds based on the transaction id.
     mapping(uint256 => mapping(address => uint256)) contribution;
