@@ -4,6 +4,7 @@ pragma solidity ^0.8.7;
 // ----------------------------------------------------------------------------
 /// @author Gradi Kayamba
 /// @title Purchase items with ether
+/// @dev notice contract gas cost (1,718,837 gas)
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
@@ -13,11 +14,6 @@ abstract contract Context {
     /// @dev Returns information about the sender of the transaction.
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
-    }
-
-    /// @dev Returns information about the value of the transaction.
-    function _msgValue() internal view virtual returns (uint256) {
-        return msg.value;
     }
 }
 
@@ -55,19 +51,19 @@ contract Purchase is Context {
     
     /**
      * @dev Triggers on any successful call to order().
-     * @param _seller : The address selling the item.
-     * @param _buyer  : The address buying the item.
-     * @param _id     : The transaction id for the item.
+     * @param seller : The address selling the item.
+     * @param buyer  : The address buying the item.
+     * @param id     : The transaction id for the item.
      */
-    event Order(address _seller, address _buyer, uint256 _id);
+    event Order(address seller, address buyer, uint256 id, uint256 amount);
     /// Triggers on any successful call to cancel().
-    event Cancel(address _seller, address _buyer, uint256 _id);
+    event Withdraw(address seller, address buyer, uint256 id, uint256 amount);
     /// Triggers on any successful call to unlock().
-    event Unlock(address _seller, address _buyer, uint256 _id);
+    event Unlock(address seller, address buyer, uint256 id);
     /// Triggers on any successful call to comfirm().
-    event Comfirm(address _seller, address _buyer, uint256 _id);
+    event Confirm(address seller, address buyer, uint256 id, uint256 buyerBalance, uint256 sellerBalance, uint256 fee);
     /// Triggers on any successful call to instantPay().
-    event InstantPay(address _seller, address _buyer, uint256 _id);
+    event InstantPay(address seller, address buyer, uint256 amount);
     
     /// You are not authorized to call this function.
     error OnlyBy();
@@ -136,11 +132,11 @@ contract Purchase is Context {
     onlyBoth(_buyer, _seller)
     whenUnlocked(_seller, _buyer, _id)
     returns (bool success)
-    {
+    { 
         // Add ether to escrow.
-        escrow[_id][_seller][_buyer] += _msgValue();
+        escrow[_id][_seller][_buyer] += msg.value;
         // Set ether contribution for _msgSender().
-        contribution[_id][_msgSender()] = _msgValue();
+        contribution[_id][_msgSender()] = msg.value;
         
         // If the caller is _seller lock the order because
         // the order is being processed.
@@ -150,7 +146,7 @@ contract Purchase is Context {
         }
         
         // See {event Order(...)}
-        emit Order(_seller, _buyer, _id);
+        emit Order(_seller, _buyer, _id, msg.value);
         
         // Returns true on success.
         return true;
@@ -204,11 +200,11 @@ contract Purchase is Context {
         if(!successToSeller && !successToBuyer && !successToFounder) revert FailedTransfer();
         
         // See {event Comfirm(...)}
-        emit Comfirm(_seller, _buyer, _id);
+        emit Confirm(_seller, _buyer, _id, _sellerBalance, _buyerBalance - _feeAmount, _feeAmount);
     }
  
     /**
-     * @dev Gas cost min (36575) - max (42000 !important)
+     * @dev Gas cost min (36575) - max (54000 !important)
      * @notice This function refunds ether to _msgSender() (_buyer or _seller) for order _id.
      * @notice Callable only when order is unlocked and contribution is not (0) zero.
      * @notice Callable only by _buyer or _seller for order _id
@@ -216,7 +212,7 @@ contract Purchase is Context {
      * @param _buyer  : The address buying the item.
      * @param _id     : The transaction id for the item.
      */
-    function cancel(address _seller, address _buyer, uint256 _id)
+    function withdraw(address _seller, address _buyer, uint256 _id)
     public 
     noZero(contribution[_id][_msgSender()])
     whenUnlocked(_seller, _buyer, _id)
@@ -236,8 +232,8 @@ contract Purchase is Context {
         // Check that the transfer is successful
         if(!success) revert FailedTransfer();
         
-        // See {event Cancel(...)}
-        emit Cancel(_seller, _buyer, _id);
+        // See {event Withdraw(...)}
+        emit Withdraw(_seller, _buyer, _id, _amount);
     }
     
     /**
@@ -294,13 +290,13 @@ contract Purchase is Context {
     function instantPay(address payable _recipient) payable public noneZero(_recipient) {
 
         // Transfer ether to _recipient.
-        (bool success,  ) = _recipient.call{value: _msgValue()}("");
+        (bool success,  ) = _recipient.call{value: msg.value}("");
         
         // Check that the transfer is successful
         if(!success) revert FailedTransfer();
         
         // See {event InstantPay(...)}
-        emit InstantPay(_msgSender(), _recipient, _msgValue());
+        emit InstantPay(_msgSender(), _recipient, msg.value);
     }
     
     
